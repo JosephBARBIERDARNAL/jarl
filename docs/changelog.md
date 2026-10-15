@@ -26,6 +26,7 @@
   * `consecutive_signs` (#745, @Yousa-Mirage)
   * `library_call` (#701)
   * `undesirable_operator` (#657, @christopherkenny)
+  * `yoda_condition` (#733, @Yousa-Mirage)
 
 * `jarl check --stdin-file-path <PATH>` lints code read from stdin, using `<PATH>`
   for config discovery, package detection, `exclude` patterns and diagnostics (#749).
