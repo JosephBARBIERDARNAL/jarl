@@ -4,8 +4,9 @@
 
 ### Breaking changes
 
-* The `jarl.toml` argument `assignment` (deprecated since 0.5.0) is removed. Use
-  the rule-specific option `[lint.assignment]` instead (#663).
+* The command-line argument `--assignment` and the `jarl.toml` argument `assignment`
+  (deprecated since 0.5.0) are removed. Use the rule-specific option
+  `[lint.assignment]` in `jarl.toml` instead (#663, #758).
 
 * The rule `browser` (deprecated since 0.5.0) is removed. Use the rule
   `undesirable_function` instead (#757).
