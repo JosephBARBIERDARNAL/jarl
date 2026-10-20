@@ -5,7 +5,7 @@
 ### Breaking changes
 
 * The command-line argument `--assignment` and the `jarl.toml` argument `assignment`
-  (deprecated since 0.5.0) are removed. Use the rule-specific option
+  (both deprecated since 0.5.0) are removed. Use the rule-specific option
   `[lint.assignment]` in `jarl.toml` instead (#663, #758).
 
 * The rule `browser` (deprecated since 0.5.0) is removed. Use the rule
@@ -21,9 +21,9 @@
 
 ### Deprecations
 
-* The `internal_function` rule is deprecated. Use `undesirable_operator` instead.
+* The `internal_function` rule is deprecated. Use `undesirable_operator` instead (#657).
 
-### Changes
+### New and improved rules
 
 * New rules:
 
@@ -33,19 +33,26 @@
   * `undesirable_operator` (#657, @christopherkenny)
   * `yoda_condition` (#733, @Yousa-Mirage)
 
+* Improved rules:
+
+  * `expect_length` no longer reports cases where `length()` is in the `expected`
+    argument, e.g. `expect_equal(nrow(x), length(y))` (#684).
+
+  * `nzchar` now also reports comparisons of `nchar(x)` with zero, such as 
+    `nchar(x) == 0`, and its fixes preserve missing values with
+    `keepNA = TRUE` (#705, @Yousa-Mirage).
+
+  * The `expect_type` rule no longer lints `expect_true(is.null(x))`, which was
+    already reported by the `expect_null` rule (#680, @Yousa-Mirage).
+
+### Other improvements
+
 * `jarl check --stdin-file-path <PATH>` lints code read from stdin, using `<PATH>`
   for config discovery, package detection, `exclude` patterns and diagnostics (#749).
 
 * The config file can be named `.jarl.toml` as well as `jarl.toml`. Both names
   are equivalent, and a directory containing both is now an error instead of
   silently using `jarl.toml` (#717).
-
-* `expect_length` no longer reports cases where `length()` is in the `expected`
-  argument, e.g. `expect_equal(nrow(x), length(y))` (#684).
-
-* The `nzchar` rule now also reports comparisons of `nchar(x)` with zero, such
-  as `nchar(x) == 0`, and its fixes preserve missing values with
-  `keepNA = TRUE` (#705, @Yousa-Mirage).
 
 * Only use placeholder text in messages and suggestions (#722).
 
@@ -55,18 +62,13 @@
   cannot be applied because the violation is in part of `@examples` (#702).
 
 * The JSON output now contains information on the fix ("safe", "unsafe", or "none")
-  (#747).
-
-* The JSON output now reports more information on syntax errors
-  (`message`, `range`, `location`) (#748).
+  (#747) and reports more information on syntax errors (`message`, `range`, `location`)
+  (#748).
 
 ### Bug fixes
 
 * Recognize parenthesized `TRUE` conditions in `repeat` and preserve loop body
   comments when applying fixes (#754, @Yousa-Mirage).
-
-* Prevent `unused_function` and `unused_object` from falsely reporting non-ASCII
-  names (#706, @Yousa-Mirage).
 
 * Handle uppercase `.RMD`/`.QMD` extensions (and any other letter-case variant)
   files consistently (#709, @Yousa-Mirage).
@@ -89,8 +91,6 @@
 * Prevent fixes for `any_is_na`, `any_duplicated`, and `condition_message`
   from dropping extra unnamed arguments (#677, @Yousa-Mirage).
 
-* Ensure that `--fix` works with multi-byte characters (#672, @Yousa-Mirage).
-
 * The `lengths` rule no longer crashes on calls where `X` is missing from the
   syntax tree, e.g. `sapply(FUN = length)` or `x |> sapply(FUN = length)`. The
   autofix now also produces `lengths(x)` instead of the invalid
@@ -99,11 +99,13 @@
 * Fix language server suppression quickfix positions for non-ASCII text and
   Rmd/Qmd chunk insertion positions (#676, #708, @Yousa-Mirage).
 
+* Prevent `unused_function` and `unused_object` from falsely reporting non-ASCII
+  names (#706, @Yousa-Mirage).
+
+* Ensure that `--fix` works with multi-byte characters (#672, @Yousa-Mirage).
+
 * Avoid invalid `literal_coercion` fixes for strings containing quotes
   (#678, @Yousa-Mirage).
-
-* The `expect_type` rule no longer lints `expect_true(is.null(x))`, which was
-  already reported by the `expect_null` rule (#680, @Yousa-Mirage).
 
 * The `pipe_consistency` rule no longer emits invalid fixes when converting
   `magrittr` pipes with a non-call RHS, such as `x %>% sum` (#683, @Yousa-Mirage).
