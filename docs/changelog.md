@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.7.1
+
+This release doesn't contain any change compared to the 0.7.0 release found on Github.
+
+For releases found on PyPI, 0.7.1 contains the fix in https://github.com/etiennebacher/jarl/commit/9ad3bd56c141673bbcbd47f99e6878007a6fa6a8 and 0.7.0 doesn't.
+This fix was made shortly after 0.7.0 was released, so I wanted to backport it and release a new 0.7.0. 
+However, PyPI doesn't allow to publish twice the same version, even if the first release is deleted.
+Therefore, I release 0.7.1 so that all releases with 0.7.1 match, no matter where they are installed from.
+
 ## 0.7.0
 
 ::: {.callout-note icon=false title="Released on 2026-10-20" .low-opacity}
