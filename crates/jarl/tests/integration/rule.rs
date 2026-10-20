@@ -310,7 +310,7 @@ fn test_deprecated_rule_shows_note() -> anyhow::Result<()> {
     ----- stdout -----
     internal_function
     Categories: SUSP
-    Enabled by default: yes
+    Enabled by default: no
     Fix: not available
     Note: deprecated since 0.7.0, use `undesirable_operator` instead
 

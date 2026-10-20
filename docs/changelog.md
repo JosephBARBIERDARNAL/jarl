@@ -24,7 +24,8 @@
 
 ### Deprecations
 
-* The `internal_function` rule is deprecated. Use `undesirable_operator` instead (#657).
+* The `internal_function` rule is deprecated and disabled by default. Use 
+  `undesirable_operator` instead (#657).
 
 ### New and improved rules
 

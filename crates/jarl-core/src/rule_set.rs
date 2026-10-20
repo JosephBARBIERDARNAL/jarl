@@ -437,7 +437,7 @@ declare_rules! {
     InternalFunction => {
         name: "internal_function",
         categories: [Susp],
-        default: Enabled,
+        default: Disabled,
         fix: None,
         min_r_version: None,
     },
