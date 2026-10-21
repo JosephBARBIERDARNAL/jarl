@@ -151,7 +151,7 @@ mod tests {
 
     #[test]
     fn test_seq2_with_comments_no_fix() {
-        // Detect both kinds of issue but skip fixes when comments are present.
+        // Should detect lint but skip fix when comments are present to avoid destroying them
         assert_snapshot!(
             snapshot_lint("seq(length(\n # a comment \nfoo(x)))"),
             @"

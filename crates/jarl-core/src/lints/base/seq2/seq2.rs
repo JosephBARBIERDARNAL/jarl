@@ -12,16 +12,14 @@ use biome_rowan::{AstNode, AstSeparatedList};
 /// ## What it does
 ///
 /// Checks for `seq(length(...))`, `seq(nrow(...))`, `seq(ncol(...))`,
-/// `seq(NROW(...))`, `seq(NCOL(...))`. See also [seq](https://jarl.etiennebacher.com/rules/seq).
+/// `seq(NROW(...))`, `seq(NCOL(...))`, seq_len(length(...)).
+/// See also [seq](https://jarl.etiennebacher.com/rules/seq).
 ///
 /// ## Why is this bad?
 ///
 /// Those patterns are often used to generate sequences from 1 to a given
 /// number. However, when `length(...)` is 0, then this creates a sequence `1,0`
 /// which is often overlooked.
-///
-/// This rule also recommends `seq_along()` instead of the more verbose
-/// `seq_len(length(...))`.
 ///
 /// This rule comes with safe automatic fixes using `seq_along()` or `seq_len()`.
 ///
