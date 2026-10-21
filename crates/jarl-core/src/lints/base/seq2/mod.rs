@@ -16,6 +16,8 @@ mod tests {
         expect_no_lint("seq_len(foo(x))", "seq2", None);
         expect_no_lint("seq_len(length(x), 2)", "seq2", None);
         expect_no_lint("seq_len(n = length(x))", "seq2", None);
+        expect_no_lint("seq_len(length(x, y))", "seq2", None);
+        expect_no_lint("seq_len(length(x = y))", "seq2", None);
         expect_no_lint("seq_along(x)", "seq2", None);
         expect_no_lint("seq(2, length(x))", "seq2", None);
         expect_no_lint("seq(length(x), 2)", "seq2", None);

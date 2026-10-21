@@ -82,12 +82,6 @@ pub fn seq2(ast: &RCall, fn_name: &str) -> anyhow::Result<Option<Diagnostic>> {
             return Ok(None);
         }
 
-        if fn_name == "seq"
-            && !["length", "nrow", "ncol", "NROW", "NCOL"].contains(&inner_fn_name.as_str())
-        {
-            return Ok(None);
-        }
-
         let arguments = arguments?;
         if fn_name == "seq_len" {
             let inner_items = arguments.items();
@@ -95,24 +89,17 @@ pub fn seq2(ast: &RCall, fn_name: &str) -> anyhow::Result<Option<Diagnostic>> {
                 return Ok(None);
             }
 
-            let Some(inner_argument) = inner_items.into_iter().next() else {
-                return Ok(None);
-            };
-            let inner_argument = inner_argument?;
+            let inner_argument = unwrap_or_return_none!(inner_items.into_iter().next())?;
             if inner_argument.name_clause().is_some() || inner_argument.value().is_none() {
                 return Ok(None);
             }
         }
 
         let inner_fun_content = arguments.items().into_syntax().to_string();
-        let message = match fn_name {
-            "seq_len" => {
-                "`seq_len(length(...))` is more verbose than `seq_along(...)`.".to_string()
-            }
-            "seq" => {
-                format!("`seq({inner_fn_name}(...))` can be wrong if the argument has length 0.")
-            }
-            _ => unreachable!(),
+        let message = if fn_name == "seq_len" {
+            "`seq_len(length(...))` is more verbose than `seq_along(...)`.".to_string()
+        } else {
+            format!("`seq({inner_fn_name}(...))` can be wrong if the argument has length 0.")
         };
         let (suggestion, replacement) = match inner_fn_name.as_str() {
             "length" => ("seq_along(...)", format!("seq_along({inner_fun_content})")),
