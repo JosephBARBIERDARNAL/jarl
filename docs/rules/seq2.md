@@ -14,6 +14,9 @@ Those patterns are often used to generate sequences from 1 to a given
 number. However, when `length(...)` is 0, then this creates a sequence `1,0`
 which is often overlooked.
 
+This rule also recommends `seq_along()` instead of the more verbose
+`seq_len(length(...))`.
+
 This rule comes with safe automatic fixes using `seq_along()` or `seq_len()`.
 
 ## Example
@@ -26,9 +29,14 @@ for (i in seq(nrow(data))) {
 for (i in seq(length(data))) {
   print("hi")
 }
+
+for (i in seq_len(length(data))) {
+  print("hi")
+}
 ```
 
 Use instead:
+
 ```r
 for (i in seq_len(nrow(data))) {
   print("hi")

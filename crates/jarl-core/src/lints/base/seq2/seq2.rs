@@ -20,6 +20,9 @@ use biome_rowan::{AstNode, AstSeparatedList};
 /// number. However, when `length(...)` is 0, then this creates a sequence `1,0`
 /// which is often overlooked.
 ///
+/// This rule also recommends `seq_along()` instead of the more verbose
+/// `seq_len(length(...))`.
+///
 /// This rule comes with safe automatic fixes using `seq_along()` or `seq_len()`.
 ///
 /// ## Example
@@ -30,6 +33,10 @@ use biome_rowan::{AstNode, AstSeparatedList};
 /// }
 ///
 /// for (i in seq(length(data))) {
+///   print("hi")
+/// }
+///
+/// for (i in seq_len(length(data))) {
 ///   print("hi")
 /// }
 /// ```
@@ -46,6 +53,10 @@ use biome_rowan::{AstNode, AstSeparatedList};
 /// ```
 /// <!-- docs: end -->
 pub fn seq2(ast: &RCall, fn_name: &str) -> anyhow::Result<Option<Diagnostic>> {
+    if fn_name == "seq_len" {
+        return seq_len_length(ast);
+    }
+
     if fn_name != "seq" {
         return Ok(None);
     }
@@ -117,4 +128,67 @@ pub fn seq2(ast: &RCall, fn_name: &str) -> anyhow::Result<Option<Diagnostic>> {
     } else {
         Ok(None)
     }
+}
+
+fn seq_len_length(ast: &RCall) -> anyhow::Result<Option<Diagnostic>> {
+    let items = ast.arguments()?.items();
+    if items.iter().count() != 1 {
+        return Ok(None);
+    }
+
+    let Some(argument) = items.into_iter().next() else {
+        return Ok(None);
+    };
+    let argument = argument?;
+    if argument.name_clause().is_some() {
+        return Ok(None);
+    }
+
+    let Some(value) = argument.value() else {
+        return Ok(None);
+    };
+    let Some(inner_call) = value.as_r_call() else {
+        return Ok(None);
+    };
+
+    let RCallFields { function, arguments } = inner_call.as_fields();
+    let function = function?;
+    if get_function_name(function) != "length" {
+        return Ok(None);
+    }
+
+    let inner_arguments = arguments?;
+    let inner_items = inner_arguments.items();
+    if inner_items.iter().count() != 1 {
+        return Ok(None);
+    }
+
+    let Some(inner_argument) = inner_items.into_iter().next() else {
+        return Ok(None);
+    };
+    let inner_argument = inner_argument?;
+    if inner_argument.name_clause().is_some() {
+        return Ok(None);
+    }
+    if inner_argument.value().is_none() {
+        return Ok(None);
+    }
+
+    let inner_fun_content = inner_arguments.items().into_syntax().to_string();
+    let range = ast.syntax().text_trimmed_range();
+    let diagnostic = Diagnostic::new(
+        ViolationData::new(
+            Rule::Seq2,
+            "`seq_len(length(...))` is more verbose than `seq_along(...)`.".to_string(),
+            Some("Use `seq_along(...)` instead.".to_string()),
+        ),
+        range,
+        Fix::new(
+            range,
+            format!("seq_along({inner_fun_content})"),
+            node_contains_comments(ast.syntax()),
+        ),
+    );
+
+    Ok(Some(diagnostic))
 }
