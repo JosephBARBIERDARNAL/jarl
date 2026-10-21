@@ -105,34 +105,30 @@ pub fn seq2(ast: &RCall, fn_name: &str) -> anyhow::Result<Option<Diagnostic>> {
         }
 
         let inner_fun_content = arguments.items().into_syntax().to_string();
-        let (message, suggestion, replacement) = match (fn_name, inner_fn_name.as_str()) {
-            ("seq_len", "length") => (
-                "`seq_len(length(...))` is more verbose than `seq_along(...)`.".to_string(),
-                "seq_along(...)",
-                format!("seq_along({inner_fun_content})"),
-            ),
-            ("seq", "length") => (
-                format!("`seq({inner_fn_name}(...))` can be wrong if the argument has length 0."),
-                "seq_along(...)",
-                format!("seq_along({inner_fun_content})"),
-            ),
-            ("seq", "nrow") => (
-                format!("`seq({inner_fn_name}(...))` can be wrong if the argument has length 0."),
+        let message = match fn_name {
+            "seq_len" => {
+                "`seq_len(length(...))` is more verbose than `seq_along(...)`.".to_string()
+            }
+            "seq" => {
+                format!("`seq({inner_fn_name}(...))` can be wrong if the argument has length 0.")
+            }
+            _ => unreachable!(),
+        };
+        let (suggestion, replacement) = match inner_fn_name.as_str() {
+            "length" => ("seq_along(...)", format!("seq_along({inner_fun_content})")),
+            "nrow" => (
                 "seq_len(nrow(...))",
                 format!("seq_len(nrow({inner_fun_content}))"),
             ),
-            ("seq", "ncol") => (
-                format!("`seq({inner_fn_name}(...))` can be wrong if the argument has length 0."),
+            "ncol" => (
                 "seq_len(ncol(...))",
                 format!("seq_len(ncol({inner_fun_content}))"),
             ),
-            ("seq", "NROW") => (
-                format!("`seq({inner_fn_name}(...))` can be wrong if the argument has length 0."),
+            "NROW" => (
                 "seq_len(NROW(...))",
                 format!("seq_len(NROW({inner_fun_content}))"),
             ),
-            ("seq", "NCOL") => (
-                format!("`seq({inner_fn_name}(...))` can be wrong if the argument has length 0."),
+            "NCOL" => (
                 "seq_len(NCOL(...))",
                 format!("seq_len(NCOL({inner_fun_content}))"),
             ),
