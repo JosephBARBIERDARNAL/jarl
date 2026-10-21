@@ -42,4 +42,8 @@ for (i in seq_len(nrow(data))) {
 for (i in seq_along(data)) {
   print("hi")
 }
+
+for (i in seq_along(data)){
+  print("hi")
+}
 ```

@@ -48,6 +48,10 @@ use biome_rowan::{AstNode, AstSeparatedList};
 /// for (i in seq_along(data)) {
 ///   print("hi")
 /// }
+///
+/// for (i in seq_along(data)){
+///   print("hi")
+/// }
 /// ```
 /// <!-- docs: end -->
 pub fn seq2(ast: &RCall, fn_name: &str) -> anyhow::Result<Option<Diagnostic>> {
