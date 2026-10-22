@@ -6,7 +6,7 @@
 ## What it does
 
 Checks for `seq(length(...))`, `seq(nrow(...))`, `seq(ncol(...))`,
-`seq(NROW(...))`, `seq(NCOL(...))`, seq_len(length(...)).
+`seq(NROW(...))`, `seq(NCOL(...))`, `seq_len(length(...))`.
 See also [seq](https://jarl.etiennebacher.com/rules/seq).
 
 ## Why is this bad?
